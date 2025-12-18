@@ -6,6 +6,7 @@ format:
     theme:
       light: flatly
       dark: darkly
+    embed-resources: true
 ---
 
 ## [**Resumen ejecutivo**]{style="color:#FF6EB4"}
