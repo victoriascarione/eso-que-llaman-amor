@@ -1,0 +1,362 @@
+---
+title: "<span style='color:#FF6EB4'>Eso que llaman amor es trabajo no pago y desigualdad de ingresos</span>"
+author: "María Victoria Scarione Avellaneda"
+format: 
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+---
+
+## [**Resumen ejecutivo**]{style="color:#FF6EB4"}
+
+El presente trabajo analiza las desigualdades de género en el mercado de trabajo argentino actual y en la distribución del ingreso desde la perspectiva de la Economía Feminista, utilizando microdatos de la Encuesta Permanente de Hogares (EPH) correspondientes al segundo trimestre de 2025. El análisis se focaliza en tres dimensiones centrales: la informalidad laboral, la subocupación y la brecha de ingresos totales entre varones y mujeres.
+
+Desde el enfoque de la Economía Feminista, estas desigualdades no pueden entenderse como meras fallas del mercado laboral, sino como resultados estructurales de la organización social del trabajo y del sistema de cuidados, que asigna de manera desigual las tareas reproductivas entre los géneros. Para ello se construyen tres indicadores: tasa de informalidad laboral por género, brecha de ingresos per capita y por género, y subocupación por género.
+
+El análisis empírico se complementa con una reflexión final sobre el rol de las políticas públicas en materia de empleo, cuidados e ingresos, destacando la necesidad de enfoques integrales que permitan reducir las brechas de género en el mercado de trabajo y en la distribución del ingreso.
+
+## [**Introducción**]{style="color:#FF6EB4"}
+
+Las desigualdades de género en el mercado de trabajo constituyen una problemática persistente y estructural en la economía argentina. A pesar de los avances en términos de participación laboral femenina y del reconocimiento normativo de derechos laborales y sociales, las mujeres continúan enfrentando mayores dificultades para acceder a empleos de calidad, con estabilidad, protección social e ingresos adecuados. Estas desigualdades se expresan en tasas más elevadas de informalidad, subocupación y menores niveles de ingresos en comparación con los varones (Ecofeminita).
+
+Desde una perspectiva económica tradicional, estas brechas suelen explicarse a partir de diferencias en educación, experiencia laboral o productividad individual. Sin embargo, la Economía Feminista cuestiona estos enfoques, señalando que el mercado de trabajo no es neutral al género y que las trayectorias laborales están profundamente condicionadas por la organización social del cuidado y la división sexual del trabajo (Esquivel, 2011; Rodríguez Enríquez, 2015).
+
+En particular, la mayor carga de trabajo doméstico y de cuidados no remunerado que recae sobre las mujeres limita su disponibilidad para el empleo remunerado, condiciona su inserción ocupacional y favorece trayectorias laborales más fragmentadas y precarias. Esta situación tiene consecuencias directas sobre los ingresos individuales y sobre cómo se distribuye el ingreso a nivel de los hogares. En este contexto, el análisis empírico de indicadores laborales y distributivos desagregados por género resulta fundamental para comprender la magnitud y las características de estas desigualdades.
+
+El objetivo de este trabajo es analizar las desigualdades de género en el empleo y la distribución del ingreso en Argentina a partir de microdatos de la EPH del segundo trimestre de 2025, combinando elementos de la Economía Feminista con ejercicios de programación en R orientados a la construcción de indicadores que faciliten el análisis.
+
+## [**Desarrollo conceptual**]{style="color:#FF6EB4"}
+
+La Economía Feminista surge como una corriente crítica frente a los enfoques económicos tradicionales (principalmente, frente a la Economía Neoclásica y su *hommo economicus*), cuestionando la supuesta neutralidad de género de los modelos y categorías analíticas convencionales. Uno de sus aportes centrales consiste en ampliar el campo de análisis económico para incluir el trabajo doméstico y de cuidados no remunerado, históricamente invisibilizado, pero indispensable para el funcionamiento del sistema económico (Esquivel, 2011).
+
+Adaptado al caso argentino, los aportes de la Economía Feminista han puesto de relieve que la inserción laboral de las mujeres se encuentra fuertemente condicionada por la organización social del cuidado. La mayor carga de trabajo no remunerado que recae sobre ellas limita su participación en el mercado laboral, reduce sus horas de trabajo remunerado y las orienta hacia empleos más flexibles, pero también más precarios (Rodríguez Enríquez, 2015). Este fenómeno se traduce en mayores niveles de informalidad y subocupación, así como en una menor estabilidad laboral.
+
+Junto con lo anterior, en general se evidencia que las mujeres se concentran en sectores de baja productividad y bajos salarios, y que incluso cuando acceden a empleos formales, enfrentan brechas de ingresos persistentes respecto de los varones. Estas brechas no responden a decisiones individuales aisladas, sino a restricciones estructurales asociadas a la organización social del cuidado y a la segregación ocupacional por género (“techos de cristal”, “pisos pegajosos”, “escaleras rotas”).
+
+Desde el punto de vista de la distribución del ingreso, el análisis del ingreso per cápita familiar permite capturar estas desigualdades de manera más amplia, al considerar la distribución de los ingresos dentro del hogar y su impacto sobre el bienestar individual. Los aportes metodológicos de la literatura sobre desigualdad y redistribución enfatizan la importancia de utilizar herramientas estadísticas adecuadas para medir estas brechas, incluyendo el uso de ponderadores muestrales y desagregaciones relevantes (Tromben et al., 2018). Si bien estos enfoques no siempre incorporan explícitamente una perspectiva de género, resultan fundamentales para operacionalizar empíricamente desigualdades estructurales que afectan de manera diferencial a varones y mujeres.
+
+En este marco, el análisis de la informalidad laboral, la subocupación y la brecha de ingresos per cápita constituye una estrategia adecuada para capturar distintas dimensiones de la desigualdad de género en el mercado de trabajo argentino.
+
+## [**Metodología**]{style="color:#FF6EB4"}
+
+El análisis empírico se basa en los microdatos de la Encuesta Permanente de Hogares (EPH) correspondientes al segundo trimestre de 2025. Para la construcción de los indicadores se utilizan tanto la base individual como la base de hogares. En el caso del análisis del empleo (informalidad y subocupación), se trabaja a nivel individual, considerando a las personas ocupadas. Para el análisis de la brecha de ingresos, se emplea el ingreso per cápita familiar (IPCF), una variable provista por la EPH que permite aproximar el nivel de ingreso disponible por persona en cada hogar.
+
+Los indicadores construidos son:
+
+-   **Tasa de informalidad laboral por género**.
+-   **Brecha de ingresos per capita y por género.**
+-   **Subocupación por género.**
+
+La elección de estos se debe a que permiten observar simultáneamente la calidad del empleo, la remuneración y las restricciones de tiempo.
+
+Entre las principales decisiones metodológicas adoptadas se destacan:
+
+-   El uso de ponderadores muestrales (PONDIIO y PONDIH) para garantizar la representatividad de los resultados.
+
+-   La definición de informalidad laboral a partir de la ausencia de descuento jubilatorio en la ocupación principal.
+
+-   La identificación de la subocupación no voluntaria combinando la cantidad de horas trabajadas, el deseo de trabajar más horas y la disponibilidad para hacerlo.
+
+-   El cálculo de la brecha de ingresos como la diferencia porcentual entre el ingreso promedio de varones y mujeres, considerando al ingreso total como la suma de laborales y no laborales, como rentas o subsidios (Glosario, Ecofeminita, 2025).
+
+A continuación, se presentan las variables seleccionadas para hacer el análisis. Estas decisiones se fundamentan tanto en la disponibilidad de información en la EPH como en los criterios metodológicos discutidos en la bibliografía especializada.
+
+```{r}
+  #CH03 → Relación de parentesco.
+  #CH04 → Sexo (1 varón, 2 mujer).
+  #ESTADO → Condición de actividad.
+  #CAT_OCUP → Categoría ocupacional.
+  #PP07H → ¿Por ese trabajo tiene descuento jubilatorio? 
+  #PP3E_TOT → Total de horas que trabajó en la semana en la ocupación principal.
+  #PP3F_TOT → Total de horas que trabajó en la semana en otras ocupaciones.
+  #PP03G → La semana pasada, ¿quería trabajar más horas? 1 = Sí 2 = No
+  #PONDIIO → Ponderador del ingreso de la ocupación principal.
+  #P47T →  Monto de ingreso total individual (sumatoria ingresos laborales y no laborales.
+  #IPCF →  Monto de ingreso per cápita familiar.
+  #IX_Men10 → Cantidad de miembros del hogar menores de 10 años
+  #PONDIH → Ponderador del ingreso total familiar y del ingreso per cápita familiar
+```
+
+Finalmente, en cuanto a algunas limitaciones a mencionar:
+
+-   La EPH no incluye datos de trabajo no remunerado (vinculados específicamente a los cuidados);
+
+-   La variable sexo es binaria;
+
+-   La subdeclaración afecta especialmente actividades informales feminizadas.
+
+## [**Resultados y análisis**]{style="color:#FF6EB4"}
+
+Este último apartado presenta los principales resultados obtenidos a partir del procesamiento de datos. Los indicadores construidos permiten analizar distintas dimensiones de la desigualdad de género en el mercado de trabajo argentino y en la distribución del ingreso, desde una perspectiva feminista que enfatiza las condiciones estructurales de inserción laboral, los ingresos y el uso del tiempo.
+
+### [**4.1 Tasa de informalidad laboral por género**]{style="color:#FF6EB4"}
+
+La figura 1 presenta la tasa de informalidad laboral por género, definida como la proporción de personas ocupadas que no realizan aportes jubilatorios en su ocupación principal, sobre el total de personas ocupadas, utilizando los ponderadores muestrales correspondientes.
+
+```{r, include=FALSE}
+rm(list = ls()) 
+options(scipen=999) 
+# Cargo librerías
+library(tidyverse)
+library(openxlsx)
+library(eph)
+library(ggplot2)
+# Levanto base individual
+base_ind <- get_microdata(
+  year = 2025,
+  period = 2,
+  type = "individual")
+# Levanto base hogar
+base_hogar <- get_microdata(
+  year = 2025,
+  period = 2,
+  type = "hogar")
+# Construyo el indicador: Tasa de informalidad por género.
+##Selecciono sólo algunas columnas y renombro parte de ellas
+eph_seleccion <- base_ind %>%
+  select(CODUSU, NRO_HOGAR, COMPONENTE, ESTADO, EMPLEO,
+         CAT_OCUP, CH04, CH06, PONDIIO)
+## Filtro solo personas ocupadas y creo variable de género y de informalidad
+eph_informal <- eph_seleccion %>%
+  filter(ESTADO == 1) %>%
+  mutate(
+    genero = if_else(CH04 == 1, "Varón", "Mujer"),
+    informal = if_else(EMPLEO == 2, 1, 0)  
+  ) %>%
+  left_join(
+    base_hogar %>% select(CODUSU, NRO_HOGAR, PONDIH),
+    by = c("CODUSU", "NRO_HOGAR")
+  )
+```
+
+```{r}
+# Calculo tasa de informalidad por género
+tasa_informalidad_genero <- eph_informal %>%
+  group_by(genero) %>%
+  summarise(
+    tasa_informalidad = sum(informal * PONDIH, na.rm = TRUE) /
+      sum(PONDIH, na.rm = TRUE)
+  ) %>%
+  mutate(tasa_informalidad = round(tasa_informalidad * 100, 1))
+```
+
+**Figura 1. Tasa de informalidad laboral por género. EPH, 2º trimestre de 2025.**
+
+```{r}
+#| echo: false
+graph_tasa_informalidad_genero <- ggplot(tasa_informalidad_genero, 
+                                         aes(x = genero, y = tasa_informalidad, fill = genero)) +
+  geom_col() +
+  geom_text(    aes(label = paste0(round(tasa_informalidad, 1), "%")), vjust = -0.3, size = 4) +
+    scale_fill_manual(values = c("Mujer" = "#CD1076", 
+                               "Varón" = "#00008B")) +
+  labs(
+    title = "Tasa de informalidad por género",
+    subtitle = "EPH – 2do trimestre. Año 2025.",
+    x = "",
+    y = "Porcentaje (%)",
+    caption = "Fuente: elaboración propia en base a Encuesta Permanente de Hogares (EPH), INDEC. 2° trimestre 2025"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.background = element_rect(fill = "grey90", color = NA),
+    plot.background = element_rect(fill = "grey90", color = NA)
+  )
+graph_tasa_informalidad_genero
+```
+
+Los resultados muestran que la tasa de informalidad es más elevada entre las mujeres que entre los varones, lo que confirma la persistencia de una inserción laboral diferencial por género en el mercado de trabajo argentino. Tal como se dijo anteriormente, esta brecha no puede interpretarse únicamente como un fenómeno individual, sino como el resultado de una estructura productiva y social que asigna a las mujeres una mayor presencia en sectores de baja productividad, empleo doméstico, trabajo por cuenta propia no registrado y ocupaciones feminizadas con menor protección social.
+
+Desde la economía feminista, esta mayor informalidad se vincula estrechamente con la división sexual del trabajo y con la carga desproporcionada de tareas de cuidado no remuneradas que enfrentan las mujeres, lo que restringe sus posibilidades de acceso a empleos formales, estables y de jornada completa (Ecofeminita). En este sentido, la informalidad laboral no constituye únicamente un problema de calidad del empleo, sino también una expresión de desigualdades estructurales en el acceso a derechos laborales y de seguridad social.
+
+En términos de políticas públicas, estos resultados refuerzan la necesidad de estrategias integrales de formalización laboral con perspectiva de género, que incluyan no solo incentivos a la registración, sino también políticas de cuidado, ampliación de servicios públicos y regulación de sectores altamente feminizados.
+
+### [**4.2 Brecha de ingresos per cápita y por género**]{style="color:#FF6EB4"}
+
+La figura 2 presenta el ingreso per cápita familiar promedio según el género, construido a partir del ingreso per cápita familiar (IPCF) de los hogares, ponderado por el factor de expansión correspondiente.
+
+```{r, include=FALSE}
+rm(list = ls())
+options(scipen=999)
+# Cargo librerías
+library(tidyverse)
+library(openxlsx)
+library(eph)
+library(ggplot2)
+# Levanto base individual
+base_ind <- get_microdata(
+  year = 2025,
+  period = 2,
+  type = "individual")
+# Levanto base hogar
+base_hogar <- get_microdata(
+  year = 2025,
+  period = 2,
+  type = "hogar")
+# Construyo el indicador: Brecha de ingresos totales entre mujeres y varones
+# De las bases anteriores, me quedo solo con jefes/as de hogar
+jefes <- base_ind %>%
+  filter(CH03 == 1) %>%   # CH03 = jefe/a
+  mutate(genero = if_else(CH04 == 1, "Varón", "Mujer")) %>%
+  select(CODUSU, NRO_HOGAR, genero)
+
+# Le sumo IPCF y PONDIH desde base_hogares
+jefes_hogar <- jefes %>%
+  left_join(
+    base_hogar %>% select(CODUSU, NRO_HOGAR, IPCF, PONDIH),
+    by = c("CODUSU", "NRO_HOGAR")
+  ) %>%
+  filter(!is.na(IPCF), IPCF > 0)
+
+# Estimo promedio ponderado por género
+ipc_prom <- jefes_hogar %>%
+  group_by(genero) %>%
+  summarise(
+    ipc = weighted.mean(IPCF, PONDIH, na.rm = TRUE)
+  )
+
+print(ipc_prom)
+```
+
+```{r}
+# Estimo brecha de ingresos
+ipc_varon <- ipc_prom$ipc[ipc_prom$genero == "Varón"]
+ipc_mujer <- ipc_prom$ipc[ipc_prom$genero == "Mujer"]
+
+brecha <- (1 - ipc_mujer / ipc_varon) * 100
+brecha
+```
+
+**Figura 2. Ingreso per cápita familiar promedio por género. EPH, 2º trimestre de 2025.**
+
+```{r}
+#| echo: false
+graph_ipc_prom <- ggplot(ipc_prom, aes(x = genero, y = ipc, fill = genero)) +
+  geom_col() +
+  geom_text(aes(label = round(ipc,0)), vjust = -0.5) +
+  scale_fill_manual(values = c("Mujer"="#CD1076", "Varón"="#00008B")) +
+  labs(
+    title = "Ingreso per cápita familiar promedio por género",
+    subtitle = paste0("Brecha: ", round(brecha, 1), "%"),
+    x = "", 
+    y = "ARS",
+    caption = "Fuente: elaboración propia en base a Encuesta Permanente de Hogares (EPH), INDEC. 2° trimestre 2025"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.background = element_rect(fill = "grey90", color = NA),
+    plot.background = element_rect(fill = "grey90", color = NA)
+  )
+
+graph_ipc_prom
+```
+
+A partir de estos valores se estimó la brecha de ingresos per cápita entre varones y mujeres, definida como la diferencia porcentual relativa entre el ingreso promedio de los hogares encabezados por varones y aquellos encabezados por mujeres. El resultado obtenido indica una brecha cercana al 17,4%, lo que implica que, en promedio, los hogares asociados a mujeres disponen de un ingreso per cápita significativamente menor que los hogares asociados a varones.
+
+Este resultado es consistente con la evidencia empírica previa para Argentina, que señala que las desigualdades de ingresos no se explican únicamente por diferencias salariales, sino también por la segmentación ocupacional, la mayor incidencia de empleos informales, la menor cantidad de horas remuneradas y la mayor presencia de hogares monoparentales con jefatura femenina.
+
+Desde una perspectiva feminista, la brecha de ingresos expresa la articulación entre el mercado de trabajo, la organización social del cuidado y la estructura familiar. En particular, la menor disponibilidad de ingresos en hogares encabezados por mujeres tiende a profundizar situaciones de vulnerabilidad económica, especialmente en contextos de presencia de niños y niñas, y limita la capacidad de estos hogares para enfrentar las crisis económicas.
+
+Este indicador refuerza el rol clave de planificar políticas públicas de ingresos con enfoque de género, tales como transferencias monetarias, sistemas de asignaciones familiares, políticas fiscales progresivas y servicios de cuidado universales, que contribuyan a reducir las desigualdades distributivas más allá del mercado laboral.
+
+### [**4.3 Subocupación no voluntaria por género**]{style="color:#FF6EB4"}
+
+La figura 3 presenta la tasa de subocupación por género, definida como
+la proporción de personas ocupadas que trabajan menos de 35 horas semanales y
+que manifiestan deseo y disponibilidad para trabajar más horas.
+
+```{r, include=FALSE}
+rm(list = ls())
+options(scipen=999)
+# Cargo librerías
+library(tidyverse)
+library(openxlsx)
+library(eph)
+library(ggplot2)
+# Levanto base individual
+base_ind <- get_microdata(
+  year = 2025,
+  period = 2,
+  type = "individual")
+# Levanto base hogar
+base_hogar <- get_microdata(
+  year = 2025,
+  period = 2,
+  type = "hogar")
+# Construyo el indicador: Subocupación por género.
+# Creo variable de género
+base_ind <- base_ind %>%
+  mutate(
+    genero = if_else(CH04 == 1, "Varón", "Mujer")
+  )
+# Defino subocupación (subocupadxs demandantes)
+subocupacion <- base_ind %>%
+  filter(ESTADO == 1) %>% 
+  mutate(
+    sub_no_vol = if_else(
+      PP3E_TOT < 35 & PP03G == 1 & PP03H == 1,
+      1, 0
+    )
+  )
+```
+
+```{r}
+# Calculo tasa por género
+tasa_sub <- subocupacion %>%
+  group_by(genero) %>%
+  summarise(
+    tasa_sub = sum(sub_no_vol * PONDIIO, na.rm = TRUE) /
+      sum(PONDIIO, na.rm = TRUE)
+  ) %>%
+  mutate(tasa_sub = tasa_sub * 100)
+
+tasa_sub
+```
+
+```{r}
+#| echo: false
+graph_tasa_sub <- ggplot(tasa_sub, aes(x = genero, y = tasa_sub, fill = genero)) +
+  geom_col() +
+  geom_text(
+    aes(label = paste0(round(tasa_sub, 1), "%")),
+    vjust = -0.4
+  ) +
+  scale_fill_manual(values = c("Mujer" = "#CD1076", "Varón" = "#00008B")) +
+  labs(
+    title = "Subocupación por género",
+    subtitle = "EPH – 2º trimestre 2025",
+    x = "",
+    y = "Porcentaje (%)",
+    caption = "Fuente: elaboración propia en base a Encuesta Permanente de Hogares (EPH), INDEC. 2° trimestre 2025"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.background = element_rect(fill = "grey90", color = NA),
+    plot.background = element_rect(fill = "grey90", color = NA)
+  )
+
+graph_tasa_sub
+```
+
+Los resultados muestran que la subocupación (no voluntaria) es más elevada entre las mujeres que entre los varones, lo que evidencia una mayor incidencia de empleos de tiempo parcial involuntario en la población femenina. Este fenómeno se vincula tanto con la estructura del mercado de trabajo como con las restricciones de tiempo que enfrentan las mujeres debido a la mayor carga de trabajo doméstico y de cuidados no remunerados.
+
+La Economía Feminista señala que el tiempo constituye un recurso económico fundamental y desigualmente distribuido entre varones y mujeres. En este sentido, la subocupación no voluntaria femenina no puede interpretarse únicamente como un problema de insuficiencia de demanda laboral, sino como el resultado de un sistema económico que descansa en el trabajo de cuidados no remunerado para su funcionamiento (Esquivel, 2011).
+
+Como se hizo anteriormente, desde el punto de vista de las políticas públicas, estos resultados ponen de relieve la necesidad de avanzar en políticas de empleo de calidad con perspectiva de cuidados, que incluyan la expansión de servicios públicos de cuidado, la revisión de las licencias maparentales, la regulación de jornadas laborales y el diseño de estrategias que permitan compatibilizar el empleo remunerado con las responsabilidades familiares sin penalizar a las mujeres en términos de ingresos y trayectorias laborales.
+
+Finalmente, es posible concluir que los tres indicadores analizados - informalidad laboral, brecha de ingresos y subocupación no voluntaria – evidencian una marcada desventaja estructural de las mujeres en el mercado de trabajo y en la distribución del ingreso en Argentina. Lejos de tratarse de fenómenos aislados, estas desigualdades se refuerzan mutuamente y evidencian la centralidad y la urgencia de incorporar un enfoque feminista en los diversos análisis, así como en la planificación y diseño de políticas públicas para comprender las dinámicas económicas actuales para lograr una sociedad más igualitaria.
+
+## [**Bibliografía**]{style="color:#FF6EB4"}
+
+Ecofeminita. (s. f.). *Publicaciones y análisis sobre economía y género*. <https://ecofeminita.com/>
+
+Esquivel, V. (2011). *La economía del cuidado en América Latina: poniendo a los cuidados en el centro de la agenda*. Santiago de Chile: CEPAL.
+
+Instituto Nacional de Estadística y Censos (INDEC). (2025). *Encuesta Permanente de Hogares: Microdatos. Segundo trimestre de 2025*. INDEC.
+
+Rodríguez Enríquez, C. (2015). *Economía feminista y economía del cuidado: Aportes conceptuales para el estudio de la desigualdad*. Revista de Estudios Feministas, 23(1), 5–28.
+
+Tromben, V., Mancero, X., & Atuesta, B. (2018). *Herramientas para el análisis de las desigualdades y del efecto redistributivo de las políticas públicas*. Comisión Económica para América Latina y el Caribe (CEPAL).
+
+Vega, D., & Kidyba, S. (2015). *Distribución funcional del ingreso en la Argentina, 1950–2007*. Desarrollo Económico, 55(216), 3–32.
