@@ -38,10 +38,11 @@ base_hogar <- get_microdata(
   #PP3F_TOT → Total de horas que trabajó en la semana en otras ocupaciones.
   #PP03G → La semana pasada, ¿quería trabajar más horas? 1 = Sí 2 = No
   #PONDIIO → Ponderador del ingreso de la ocupación principal.
-  #P47T →  Monto de ingreso total individual (sumatoria ingresos laborales y no laborales.
+  #P47T →  Monto de ingreso total individual (sumatoria ingresos laborales y no laborales).
   #IPCF →  Monto de ingreso per cápita familiar.
-  #IX_Men10 → Cantidad de miembros del hogar menores de 10 años
+  #IX_Men10 → Cantidad de miembros del hogar menores de 10 años.
   #PONDIH → Ponderador del ingreso total familiar y del ingreso per cápita familiar.
+  #PONDII →  Ponderador para ingreso total individual.
 
 # Construyo el indicador: Tasa de informalidad por género.
 ##Selecciono sólo algunas columnas y renombro parte de ellas
@@ -92,43 +93,39 @@ graph_tasa_informalidad_genero <- ggplot(tasa_informalidad_genero,
 graph_tasa_informalidad_genero
 
 # Construyo el indicador: Brecha de ingresos totales entre mujeres y varones
-# De las bases anteriores, me quedo solo con jefes/as de hogar
-jefes <- base_ind %>%
-  filter(CH03 == 1) %>%   # CH03 = jefe/a
-  mutate(genero = if_else(CH04 == 1, "Varón", "Mujer")) %>%
-  select(CODUSU, NRO_HOGAR, genero)
-
-# Le sumo IPCF y PONDIH desde base_hogares
-jefes_hogar <- jefes %>%
-  left_join(
-    base_hogar %>% select(CODUSU, NRO_HOGAR, IPCF, PONDIH),
-    by = c("CODUSU", "NRO_HOGAR")
+# Base individual con ingresos positivos
+base_ing <- base_ind %>%
+  mutate(
+    genero = if_else(CH04 == 1, "Varón", "Mujer"),
+    P47T   = as.numeric(P47T),
+    PONDII = as.numeric(PONDII)
   ) %>%
-  filter(!is.na(IPCF), IPCF > 0)
+  filter(!is.na(P47T), P47T > 0,
+         !is.na(PONDII), PONDII > 0)
 
-# Estimo promedio ponderado por género
-ipc_prom <- jefes_hogar %>%
+# Promedio ponderado de ingresos totales por género
+ing_prom <- base_ing %>%
   group_by(genero) %>%
   summarise(
-    ipc = weighted.mean(IPCF, PONDIH, na.rm = TRUE)
+    ingreso = weighted.mean(P47T, PONDII, na.rm = TRUE)
   )
 
-print(ipc_prom)
+print(ing_prom)
 
 # Estimo brecha de ingresos
-ipc_varon <- ipc_prom$ipc[ipc_prom$genero == "Varón"]
-ipc_mujer <- ipc_prom$ipc[ipc_prom$genero == "Mujer"]
+ing_varon <- ing_prom$ingreso[ing_prom$genero == "Varón"]
+ing_mujer <- ing_prom$ingreso[ing_prom$genero == "Mujer"]
 
-brecha <- (1 - ipc_mujer / ipc_varon) * 100
+brecha <- (1 - ing_mujer / ing_varon) * 100
 brecha
 
 # Grafico
-graph_ipc_prom <- ggplot(ipc_prom, aes(x = genero, y = ipc, fill = genero)) +
+graph_ing_prom <- ggplot(ing_prom, aes(x = genero, y = ingreso, fill = genero)) +
   geom_col() +
-  geom_text(aes(label = round(ipc,0)), vjust = -0.5) +
-  scale_fill_manual(values = c("Mujer"="#CD1076", "Varón"="#00008B")) +
+  geom_text(aes(label = round(ingreso, 0)), vjust = -0.5) +
+  scale_fill_manual(values = c("Mujer" = "#CD1076", "Varón" = "#00008B")) +
   labs(
-    title = "Ingreso per cápita familiar promedio por género",
+    title = "Ingreso total individual promedio por género",
     subtitle = paste0("Brecha: ", round(brecha, 1), "%"),
     x = "", 
     y = "ARS",
@@ -137,10 +134,11 @@ graph_ipc_prom <- ggplot(ipc_prom, aes(x = genero, y = ipc, fill = genero)) +
   theme_minimal(base_size = 12) +
   theme(
     panel.background = element_rect(fill = "grey90", color = NA),
-    plot.background = element_rect(fill = "grey90", color = NA)
+    plot.background  = element_rect(fill = "grey90", color = NA)
   )
 
-graph_ipc_prom
+graph_ing_prom
+
 
 # Construyo el indicador: Subocupación por género.
 # Creo variable de género
